@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companies Company[]
+}
+
+model Company {
+  id                 String    @id @default(cuid())
+  userId             String
+  name               String
+  address            String?
+  gstNumber          String?
+  state              String?
+  phone              String?
+  email              String?
+  financialYearStart DateTime?
+  financialYearEnd   DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  groups                Group[]
+  ledgers               Ledger[]
+  stockGroups           StockGroup[]
+  units                 Unit[]
+  stockItems            StockItem[]
+  customers             Customer[]
+  suppliers             Supplier[]
+  vouchers              Voucher[]
+  voucherLines          VoucherLine[]
+  inventoryTransactions InventoryTransaction[]
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  companyId   String
+  name        String
+  type        String
+  parentId    String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  parent   Group?  @relation("GroupToGroup", fields: [parentId], references: [id])
+  children Group[] @relation("GroupToGroup")
+
+  ledgers Ledger[]
+}
+
+model Ledger {
+  id                 String   @id @default(cuid())
+  companyId          String
+  groupId            String?
+  name               String
+  ledgerType         String
+  openingBalance     Decimal  @default(0)
+  openingBalanceType String?
+  gstin              String?
+  mobile             String?
+  email              String?
+  address            String?
+  state              String?
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  group   Group?   @relation(fields: [groupId], references: [id])
+
+  customer Customer?
+  supplier Supplier?
+
+  debitLines  VoucherLine[] @relation("DebitLedger")
+  creditLines VoucherLine[] @relation("CreditLedger")
+}
+
+model StockGroup {
+  id          String   @id @default(cuid())
+  companyId   String
+  name        String
+  parentId    String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  items   StockItem[]
+}
+
+model Unit {
+  id             String   @id @default(cuid())
+  companyId      String
+  name           String
+  shortCode      String
+  decimalAllowed Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  items   StockItem[]
+}
+
+model StockItem {
+  id               String   @id @default(cuid())
+  companyId        String
+  stockGroupId     String?
+  unitId           String?
+  name             String
+  sku              String?
+  hsnCode          String?
+  purchasePrice    Decimal  @default(0)
+  sellingPrice     Decimal  @default(0)
+  gstRate          Decimal  @default(0)
+  openingStockQty  Decimal  @default(0)
+  openingStockRate Decimal  @default(0)
+  currentStock     Decimal  @default(0)
+  minStock         Decimal  @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  stockGroup StockGroup? @relation(fields: [stockGroupId], references: [id])
+  unit       Unit?       @relation(fields: [unitId], references: [id])
+
+  inventoryTransactions InventoryTransaction[]
+  voucherLines          VoucherLine[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  companyId String
+  ledgerId  String   @unique
+  name      String
+  mobile    String?
+  email     String?
+  address   String?
+  gstin     String?
+  state     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ledger  Ledger  @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  companyId String
+  ledgerId  String   @unique
+  name      String
+  mobile    String?
+  email     String?
+  address   String?
+  gstin     String?
+  state     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ledger  Ledger  @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
+}
+
+model Voucher {
+  id            String   @id @default(cuid())
+  companyId     String
+  voucherType   String
+  voucherNumber String
+  date          DateTime
+  partyLedgerId String?
+  notes         String?
+  subtotal      Decimal  @default(0)
+  cgst          Decimal  @default(0)
+  sgst          Decimal  @default(0)
+  igst          Decimal  @default(0)
+  discount      Decimal  @default(0)
+  roundOff      Decimal  @default(0)
+  total         Decimal  @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  lines VoucherLine[]
+}
+
+model VoucherLine {
+  id             String   @id @default(cuid())
+  companyId      String
+  voucherId      String
+  itemId         String?
+  debitLedgerId  String?
+  creditLedgerId String?
+  description    String?
+  qty            Decimal?
+  rate           Decimal?
+  amount         Decimal
+  gstRate        Decimal? @default(0)
+  gstAmount      Decimal? @default(0)
+  createdAt      DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+
+  item         StockItem? @relation(fields: [itemId], references: [id])
+  debitLedger  Ledger?    @relation("DebitLedger", fields: [debitLedgerId], references: [id])
+  creditLedger Ledger?    @relation("CreditLedger", fields: [creditLedgerId], references: [id])
+}
+
+model InventoryTransaction {
+  id        String   @id @default(cuid())
+  companyId String
+  itemId    String
+  voucherId String?
+  type      String
+  qty       Decimal
+  rate      Decimal?
+  amount    Decimal?
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+
+  company Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  item    StockItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
