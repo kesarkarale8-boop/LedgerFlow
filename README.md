@@ -1,36 +1,237 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 LedgerFlow ERP
 
-## Getting Started
+Modern Enterprise Resource Planning (ERP) System built with **Next.js 16, React 19, TypeScript, Tailwind CSS, Prisma & MySQL**
 
-First, run the development server:
+ 
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 📌 Overview
+
+LedgerFlow ERP is a complete business management solution designed for small and medium businesses.
+
+It provides everything needed to manage:
+
+- Company
+- Customers
+- Suppliers
+- Inventory
+- Sales
+- Purchase
+- Accounting
+- GST
+- Reports
+- User Management
+
+The application is built using the latest Next.js App Router architecture with reusable components and a modern UI.
+
+---
+
+# ✨ Features
+
+## 📊 Dashboard
+
+- Professional Dashboard
+- KPI Cards
+- Revenue Analytics
+- Sales Analytics
+- Purchase Analytics
+- Inventory Overview
+- Outstanding Payments
+- Recent Activities
+- Latest Invoices
+- Business Summary
+- Dark / Light Theme
+- Responsive Layout
+
+---
+
+## 🏢 Masters
+
+- Company
+- Ledger
+- Customer
+- Supplier
+- Employee
+- Unit
+- Stock Group
+- Stock Category
+- Stock Item
+- Godown
+
+---
+
+## 💰 Accounting
+
+- Payment
+- Receipt
+- Contra
+- Journal
+- Expense
+- Income
+- Bank Transactions
+
+---
+
+## 📦 Inventory
+
+- Purchase
+- Purchase Return
+- Sales
+- Sales Return
+- Quotation
+- Estimate
+- Delivery Challan
+- Stock Adjustment
+- Stock Transfer
+
+---
+
+## 📑 Reports
+
+- Dashboard Report
+- GST Report
+- Ledger Report
+- Cash Book
+- Day Book
+- Trial Balance
+- Balance Sheet
+- Profit & Loss
+- Outstanding Report
+- Stock Summary
+
+---
+
+## 👤 User Management
+
+- Login
+- Register
+- Forgot Password
+- Role Management
+- Permission Management
+- Company Settings
+- Profile Settings
+
+---
+
+# 🎨 UI Features
+
+- Modern UI
+- Glassmorphism
+- Gradient Cards
+- Animated Dashboard
+- Responsive Sidebar
+- Responsive Navbar
+- Dark Mode
+- Light Mode
+- Mobile Responsive
+- Beautiful Tables
+- Professional Forms
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide Icons
+
+## Backend
+
+- Next.js Server Actions
+- Prisma ORM
+- MySQL
+
+## Authentication
+
+- NextAuth
+
+## Validation
+
+- Zod
+- React Hook Form
+
+## Notifications
+
+- Sonner
+
+---
+
+# 📁 Folder Structure
+
+```
+src
+│
+├── app
+│
+├── components
+│   ├── dashboard
+│   ├── layout
+│   ├── ui
+│   ├── forms
+│   ├── tables
+│   └── common
+│
+├── hooks
+├── lib
+├── prisma
+├── providers
+├── styles
+├── types
+└── utils
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# 📈 Roadmap
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Dashboard Analytics
+- GST Module
+- Accounting
+- Inventory
+- CRM
+- Payroll
+- HRM
+- Attendance
+- POS Billing
+- Barcode Support
+- QR Code
+- Email Integration
+- WhatsApp Integration
+- SMS API
+- AI Reports
+- AI Chat Assistant
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+# 📸 Screenshots
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Dashboard
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Customers
 
-## Deploy on Vercel
+Suppliers
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Inventory
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Sales
+
+Purchase
+
+Reports
+
+ 
+---
+
+ 
+# 👨‍💻 Author
+
+**Kesar Karale**
+
+Full Stack Developer
+
+Made with ❤️ using Next.js
