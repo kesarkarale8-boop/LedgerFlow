@@ -1,222 +1,344 @@
-"use client";
+ "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Loader2, ShieldCheck, BarChart3, WalletCards } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowRight,
+  ShieldCheck,
+  BarChart3,
+  Boxes,
+  Users,
+} from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [showPassword, setShowPassword] =
+    useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const onChange = (key: "email" | "password", value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+  const [email, setEmail] =
+    useState("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const [password, setPassword] =
+    useState("");
 
-  if (!formData.email || !formData.password) {
-    toast.error("Please enter email and password");
-    return;
-  }
+  async function handleLogin(
+    e: React.FormEvent
+  ) {
+    e.preventDefault();
 
-  try {
-    setIsLoading(true);
-
-    const res = await signIn("credentials", {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-    });
-
-    console.log("SIGNIN RESPONSE =>", res);
-
-    if (res?.error) {
-      toast.error("Invalid email or password");
+    if (!email || !password) {
+      toast.error(
+        "Please fill all fields."
+      );
       return;
     }
 
-    toast.success("Login successful");
-console.log("SIGNIN RESPONSE =>", res);
-    window.location.href = "/dashboard";
-  } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong");
-  } finally {
-    setIsLoading(false);
+    setLoading(true);
+
+    try {
+      const result = await signIn(
+        "credentials",
+        {
+          email,
+          password,
+          redirect: false,
+        }
+      );
+
+      if (result?.error) {
+        toast.error(
+          "Invalid Email or Password"
+        );
+
+        setLoading(false);
+        return;
+      }
+
+      toast.success(
+        "Login Successful 🎉"
+      );
+
+      router.push("/dashboard");
+
+      router.refresh();
+    } catch (error) {
+      toast.error(
+        "Something went wrong."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
-};
+
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <div className="grid min-h-screen lg:grid-cols-2">
-        {/* Left Branding Section */}
-        <section className="relative hidden overflow-hidden lg:flex">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950" />
-          <div className="absolute -left-20 top-20 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
+    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200 flex items-center justify-center p-6">
 
-          <div className="relative z-10 flex h-full w-full flex-col justify-between p-10 xl:p-14">
-            <div>
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 shadow-lg shadow-blue-900/40">
-                  <WalletCards className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold tracking-wide text-white">
-                    LedgerFlow
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Smart ERP for billing, accounts & inventory
-                  </p>
-                </div>
+      <div className="w-full max-w-7xl overflow-hidden rounded-[32px] bg-white shadow-2xl lg:grid lg:grid-cols-2">
+
+        {/* LEFT */}
+
+        <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-blue-700 via-indigo-700 to-slate-900 p-14 text-white">
+
+          <div>
+
+            <div className="flex items-center gap-4">
+
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
+
+                <ShieldCheck size={34} />
+
               </div>
 
-              <div className="mt-16 max-w-xl">
-                <h1 className="text-4xl font-bold leading-tight xl:text-5xl">
-                  Run your business finance, stock and sales in one clean workspace.
-                </h1>
-                <p className="mt-5 text-base leading-7 text-slate-300 xl:text-lg">
-                  Manage ledgers, vouchers, inventory, GST-ready billing and business reports with a modern ERP dashboard built for growing teams.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-blue-500/10 p-3 text-blue-300">
-                    <BarChart3 className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Realtime business overview</h3>
-                    <p className="mt-1 text-sm leading-6 text-slate-300">
-                      Track sales, outstanding balances, purchase trends and stock movement from one dashboard.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-300">
-                    <ShieldCheck className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Secure account access</h3>
-                    <p className="mt-1 text-sm leading-6 text-slate-300">
-                      Protected login flow with role-ready structure and scalable ERP foundation.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Right Login Section */}
-        <section className="flex items-center justify-center px-5 py-10 sm:px-8 lg:px-10">
-          <div className="w-full max-w-md">
-            {/* Mobile Logo */}
-            <div className="mb-8 flex items-center gap-3 lg:hidden">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-900/40">
-                <WalletCards className="h-5 w-5 text-white" />
-              </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">LedgerFlow</h2>
-                <p className="text-sm text-slate-400">Business ERP Workspace</p>
+
+                <h1 className="text-4xl font-bold">
+                  LedgerFlow ERP
+                </h1>
+
+                <p className="text-blue-100 text-lg">
+                  Professional Business Suite
+                </p>
+
               </div>
+
             </div>
 
-            <Card className="border border-slate-800 bg-slate-900/80 text-white shadow-2xl shadow-black/20 backdrop-blur">
-              <CardHeader className="space-y-2 pb-6">
-                <CardTitle className="text-3xl font-bold tracking-tight">
-                  Sign in
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Access your LedgerFlow dashboard and continue managing your business operations.
-                </CardDescription>
-              </CardHeader>
+            <h2 className="mt-16 text-6xl font-bold leading-tight">
+              Smart Accounting
+              <br />
+              Made Simple.
+            </h2>
 
-              <CardContent>
-                <form onSubmit={onSubmit} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-slate-200">
-                      Email address
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={formData.email}
-                      onChange={(e) => onChange("email", e.target.value)}
-                      className="h-11 border-slate-800 bg-slate-950 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
-                    />
-                  </div>
+            <p className="mt-8 max-w-xl text-xl leading-9 text-blue-100">
+              Manage Accounting, Inventory,
+              Sales, Customers, GST,
+              Expenses and Reports from one
+              modern dashboard.
+            </p>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-slate-200">
-                        Password
-                      </Label>
-                    </div>
-
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={(e) => onChange("password", e.target.value)}
-                      className="h-11 border-slate-800 bg-slate-950 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="h-11 w-full bg-blue-600 text-white hover:bg-blue-500"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign in to dashboard"
-                    )}
-                  </Button>
-
-                  <p className="text-center text-sm text-slate-400">
-                    Don&apos;t have an account?{" "}
-                    <Link
-                      href="/register"
-                      className="font-medium text-blue-400 transition hover:text-blue-300 hover:underline"
-                    >
-                      Create account
-                    </Link>
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
           </div>
-        </section>
+
+          <div className="space-y-5">
+
+            <div className="flex items-center gap-5 rounded-2xl bg-white/10 p-6 backdrop-blur">
+
+              <BarChart3 size={30} />
+
+              <div>
+
+                <h3 className="font-semibold text-lg">
+                  Real-Time Analytics
+                </h3>
+
+                <p className="text-blue-100">
+                  Live business reports.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex items-center gap-5 rounded-2xl bg-white/10 p-6 backdrop-blur">
+
+              <Boxes size={30} />
+
+              <div>
+
+                <h3 className="font-semibold text-lg">
+                  Inventory Management
+                </h3>
+
+                <p className="text-blue-100">
+                  Track products instantly.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex items-center gap-5 rounded-2xl bg-white/10 p-6 backdrop-blur">
+
+              <Users size={30} />
+
+              <div>
+
+                <h3 className="font-semibold text-lg">
+                  Customer Management
+                </h3>
+
+                <p className="text-blue-100">
+                  Manage clients professionally.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* RIGHT */}
+
+        <div className="flex items-center justify-center bg-slate-50 p-12">
+
+          <div className="w-full max-w-lg rounded-3xl bg-white p-10 shadow-xl">
+
+            <h2 className="text-4xl font-bold text-slate-900">
+              Welcome Back 👋
+            </h2>
+
+            <p className="mt-3 text-slate-500">
+              Login to continue to
+              LedgerFlow ERP
+            </p>
+
+            <form
+              onSubmit={handleLogin}
+              className="mt-10 space-y-6"
+            >
+                            {/* Email */}
+              <div className="relative">
+                <Mail
+                  size={20}
+                  className="absolute left-4 top-4 text-slate-400"
+                />
+
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
+                  className="h-14 w-full rounded-xl border border-slate-300 bg-white pl-12 pr-4 text-base outline-none transition-all focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="relative">
+                <Lock
+                  size={20}
+                  className="absolute left-4 top-4 text-slate-400"
+                />
+
+                <input
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) =>
+                    setPassword(
+                      e.target.value
+                    )
+                  }
+                  className="h-14 w-full rounded-xl border border-slate-300 bg-white pl-12 pr-12 text-base outline-none transition-all focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword(
+                      !showPassword
+                    )
+                  }
+                  className="absolute right-4 top-4 text-slate-500"
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+
+                <label className="flex items-center gap-2 text-slate-600">
+
+                  <input type="checkbox" />
+
+                  Remember me
+
+                </label>
+
+                <Link
+                  href="/forgot-password"
+                  className="font-medium text-blue-600 hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-lg font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? (
+                  "Logging In..."
+                ) : (
+                  <>
+                    Login
+                    <ArrowRight size={20} />
+                  </>
+                )}
+              </button>
+
+            </form>
+
+            <div className="my-8 flex items-center gap-4">
+
+              <div className="h-px flex-1 bg-slate-300" />
+
+              <span className="text-sm text-slate-500">
+                OR
+              </span>
+
+              <div className="h-px flex-1 bg-slate-300" />
+
+            </div>
+
+            <button className="mb-4 h-14 w-full rounded-xl border border-slate-300 font-semibold transition hover:bg-slate-100">
+              Continue with Google
+            </button>
+
+            <button className="h-14 w-full rounded-xl border border-slate-300 font-semibold transition hover:bg-slate-100">
+              Continue with GitHub
+            </button>
+
+            <p className="mt-8 text-center text-slate-600">
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Create Account
+              </Link>
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
+
     </main>
   );
 }
