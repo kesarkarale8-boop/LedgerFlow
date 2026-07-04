@@ -54,7 +54,7 @@ export default function LoginPage() {
     }
 
     toast.success("Login successful");
-
+console.log("SIGNIN RESPONSE =>", res);
     window.location.href = "/dashboard";
   } catch (error) {
     console.error(error);
