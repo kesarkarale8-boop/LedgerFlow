@@ -29,41 +29,28 @@ export default function LoginPage() {
     }));
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+ const res = await signIn("credentials", {
+  email: formData.email,
+  password: formData.password,
+  redirect: false,
+});
 
-  if (!formData.email || !formData.password) {
-    toast.error("Please enter email and password");
-    return;
-  }
+console.log("SIGNIN RESPONSE =>", res);
 
-  try {
-    setIsLoading(true);
+if (!res) {
+  toast.error("No response from signIn");
+  return;
+}
 
-    const res = await signIn("credentials", {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-    });
+if (res.error) {
+  toast.error(res.error);
+  return;
+}
 
-    console.log("SIGNIN RESPONSE =>", res);
-
-    if (res?.error) {
-      toast.error("Invalid email or password");
-      return;
-    }
-
-    toast.success("Login successful");
-
-    window.location.href = "/dashboard";
-  } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+if (res.ok) {
+  toast.success("Login successful");
+  router.push("/dashboard");
+}
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="grid min-h-screen lg:grid-cols-2">
